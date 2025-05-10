@@ -1,5 +1,8 @@
 import torch.nn as nn
 
+from src.registry.registry import GLOBAL_REGISTRY
+
+@GLOBAL_REGISTRY.register(category='decoder', name='small_decoder')
 class SmallDecoder(nn.Module):
     def __init__(self):
         super().__init__()
