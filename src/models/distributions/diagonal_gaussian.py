@@ -4,10 +4,13 @@
 # Original source is part of the diffusers library by Hugging Face.
 # Licensed under the Apache License, Version 2.0.
 # See https://www.apache.org/licenses/LICENSE-2.0 for license details.
+from typing import Optional, Tuple
+
+import torch
 
 from src.registry.registry import GLOBAL_REGISTRY
 
-@GLOBAL_REGISTRY.register(catetgory='distribution', name='diagonal_gaussian_distribution')
+@GLOBAL_REGISTRY.register(category='distribution', name='DiagonalGaussianDistribution')
 class DiagonalGaussianDistribution(object):
     def __init__(self, parameters: torch.Tensor, deterministic: bool = False):
         self.parameters = parameters

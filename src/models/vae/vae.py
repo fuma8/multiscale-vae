@@ -3,17 +3,17 @@ import torch.nn.functional as F
 
 from src.registry.registry import GLOBAL_REGISTRY
 
-@GLOBAL_REGISTRY.register(category='vae', name='base_vae')
+@GLOBAL_REGISTRY.register(category='vae', name='BaseVAE')
 class BaseVAE(nn.Module):
-    def __init__(self, encoder, decoder, distribution):
+    def __init__(self, encoder, decoder):
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
-        self.distribution = distribution
     
     def get_loss(self, x):
         z = self.encoder(x)
-        posterior = self.distribution(z)
+        from src.factories.model_factory import get_model
+        posterior = get_model(category='distribution', name='DiagonalGaussianDistribution', parameters=z)
         z = posterior.sample()
         x_hat = self.decoder(z)
         

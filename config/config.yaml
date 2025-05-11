@@ -5,9 +5,12 @@ dataset:
     image_size: 64
 
 model:
-  name: my_vae
+  vae: BaseVAE
+  encoder: SmallEncoder
+  decoder: SmallDecoder
+  distribution: DiagonalGaussianDistribution
   args:
-    latent_dim: 128
+    latent_dim: 64
 
 trainer:
   name: vae_trainer
