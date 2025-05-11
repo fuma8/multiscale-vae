@@ -1,0 +1,18 @@
+dataset:
+  name: cifar10
+  args:
+    batch_size: 64
+    image_size: 64
+
+model:
+  name: my_vae
+  args:
+    latent_dim: 128
+
+trainer:
+  name: vae_trainer
+  args:
+    epochs: 50
+
+training:
+  lr: 0.001
