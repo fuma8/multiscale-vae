@@ -4,11 +4,12 @@
 # Original source is part of the diffusers library by Hugging Face.
 # Licensed under the Apache License, Version 2.0.
 # See https://www.apache.org/licenses/LICENSE-2.0 for license details.
-from typing import Optional, Tuple
+from typing import Optional
 
 import torch
 
 from src.registry.registry import GLOBAL_REGISTRY
+from src.utils.torch_utils import randn_tensor
 
 @GLOBAL_REGISTRY.register(category='distribution', name='DiagonalGaussianDistribution')
 class DiagonalGaussianDistribution(object):

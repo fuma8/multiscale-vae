@@ -1,5 +1,6 @@
 import os
 
+import torch
 class VAETrainer:
     def __init__(self, model, train_dataloader, val_dataloader, optimizer, scheduler, epochs, save_dir, device):
         self.model = model
@@ -32,7 +33,7 @@ class VAETrainer:
         return total_loss
     
     def validate(self):
-        self.model.val()
+        self.model.eval()
         total_loss = 0.0
         with torch.no_grad():
             for data, _ in self.val_dataloader:
@@ -53,7 +54,8 @@ class VAETrainer:
             
             self.scheduler.step()
             
-            save_path = os.path.join(self.save_dir, f'model_epoch_{epoch+1}.pt')
-            torch.save(self.model.state_dict(), save_path)
-            print(f"Saved model to {save_path}")
+            if (epoch+1) % 5 == 0:
+                save_path = os.path.join(self.save_dir, f'model_epoch_{epoch+1}.pt')
+                torch.save(self.model.state_dict(), save_path)
+                print(f"Saved model to {save_path}")
         return self.history

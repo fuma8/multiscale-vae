@@ -35,6 +35,7 @@ def main():
                 save_dir=config['trainer']['args']['save_dir'],
                 device=device
                 )
+    history = vae_trainer.train_model()
     
     
 if __name__ == "__main__":

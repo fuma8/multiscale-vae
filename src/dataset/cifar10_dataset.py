@@ -1,4 +1,5 @@
 from torchvision import datasets
+from torch.utils.data import DataLoader
 
 from src.dataset.custom_dataset_loader import CustomDatasetLoader
 from src.registry.registry import GLOBAL_REGISTRY
@@ -9,9 +10,15 @@ class CIFAR10Loader(CustomDatasetLoader):
         super().__init__(image_size, batch_size, train, download)
 
     def _get_dataset(self):
-        return datasets.CIFAR10(
+        dataset = datasets.CIFAR10(
             root='./data',
             train=self.train,
             download=self.download,
             transform=self.transform
+        )
+        return DataLoader(
+            dataset,
+            batch_size=self.batch_size,
+            shuffle=self.train,
+            num_workers=1
         )
