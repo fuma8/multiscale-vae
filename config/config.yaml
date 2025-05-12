@@ -2,7 +2,7 @@ dataset:
   name: cifar10
   args:
     batch_size: 64
-    image_size: 64
+    image_size: 32
 
 model:
   vae: BaseVAE
@@ -15,7 +15,7 @@ model:
 trainer:
   name: vae_trainer
   args:
-    epochs: 50
+    epochs: 5
     lr: 0.001
-    save_dir: './results'
+    save_dir: './results/img_size_32'
     
