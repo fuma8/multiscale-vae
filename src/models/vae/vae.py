@@ -10,7 +10,7 @@ class BaseVAE(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
     
-    def get_loss(self, x):
+    def forward(self, x):
         z = self.encoder(x)
         from src.factories.model_factory import get_model
         posterior = get_model(category='distribution', name='DiagonalGaussianDistribution', parameters=z)
@@ -20,4 +20,4 @@ class BaseVAE(nn.Module):
         batch_size = len(x)
         L1 = F.mse_loss(x_hat, x, reduction="sum")
         L2 = torch.sum(posterior.kl())
-        return (L1 + L2) / batch_size
+        return (L1 + L2) / batch_size, z
