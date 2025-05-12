@@ -26,7 +26,7 @@ class VAETrainer:
             self.optimizer.step()
             
             total_loss += loss.item()
-            self.history['z'].append(z)
+            self.history['z'].append(z.detach().cpu())
             self.history['label'].append(label)
         total_loss /= len(self.train_dataloader)
         self.history['train_loss'].append(total_loss)

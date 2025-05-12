@@ -1,4 +1,6 @@
 import yaml
+import pickle
+
 import torch
 
 from src.factories.dataset_factory import get_dataloader
@@ -36,7 +38,8 @@ def main():
                 device=device
                 )
     history = vae_trainer.train_model()
-    
-    
+    with open('history.pkl', 'wb') as f:
+        pickle.dump(history, f)
+
 if __name__ == "__main__":
     main()
