@@ -11,7 +11,7 @@ class VAETrainer:
         self.epochs = epochs
         self.save_dir = save_dir
         self.device = device
-        self.history = {'train_loss': [], 'val_loss': [], 'z': [], 'label': []}
+        self.history = {'train_loss': [], 'val_loss': []}
         
         os.makedirs(self.save_dir, exist_ok=True)
     
@@ -26,8 +26,6 @@ class VAETrainer:
             self.optimizer.step()
             
             total_loss += loss.item()
-            self.history['z'].append(z.detach().cpu())
-            self.history['label'].append(label)
         total_loss /= len(self.train_dataloader)
         self.history['train_loss'].append(total_loss)
         return total_loss
