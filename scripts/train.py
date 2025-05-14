@@ -45,7 +45,7 @@ def main():
                 )
     # if train:
     history = vae_trainer.train_model()
-    with open('history.pkl', 'wb') as f:
+    with open(f"history_img_size_{config['dataset']['args']['image_size']}.pkl", 'wb') as f:
         pickle.dump(history, f)
     # else:
     #     vae.load_state_dict(torch.load('/home/19x3039_kimishima/multiscale-vae/results/img_size_32/model_epoch_50.pt'))
