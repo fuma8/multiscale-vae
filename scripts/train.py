@@ -23,8 +23,8 @@ def main():
     train_dataloader = get_dataloader(dataset_name=config['dataset']['name'], train=True, **dataset_args)._get_dataset()
     val_dataloader = get_dataloader(dataset_name=config['dataset']['name'], train=False)._get_dataset()
     
-    encoder = get_model(category='encoder', name=config['model']['encoder'], in_channels=3, out_channels=4)
-    decoder = get_model(category='decoder', name=config['model']['decoder'], in_channels=4, out_channels=3)
+    encoder = get_model(category='encoder', name=config['model']['encoder'], in_channels=config['model']['args']['in_channels'], out_channels=config['model']['args']['latent_channels'])
+    decoder = get_model(category='decoder', name=config['model']['decoder'], in_channels=config['model']['args']['latent_channels'], out_channels=config['model']['args']['out_channels'])
     vae = get_model(category='vae', name=config['model']['vae'], encoder=encoder, decoder=decoder).to(device)
     
     optimizer = torch.optim.Adam(vae.parameters(), lr=config['trainer']['args']['lr'])
