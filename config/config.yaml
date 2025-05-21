@@ -2,12 +2,13 @@ dataset:
   name: cifar10
   args:
     batch_size: 64
-    image_size: 32
+    image_size: 64
 
 model:
+  name: Diffusers
   vae: BaseVAE
-  encoder: SmallEncoder
-  decoder: SmallDecoder
+  encoder: DiffusersEncoder
+  decoder: DiffusersDecoder
   distribution: DiagonalGaussianDistribution
   args:
     latent_dim: 64
@@ -17,5 +18,5 @@ trainer:
   args:
     epochs: 200
     lr: 0.001
-    save_dir: './results/img_size_32'
+    save_dir: './results/img_size_64'
     
