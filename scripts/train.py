@@ -54,7 +54,7 @@ def main():
         with open(pkl_path, 'wb') as f:
             pickle.dump(history, f)
     else:
-        vae.load_state_dict(torch.load('/home/19x3039_kimishima/multiscale-vae/results/img_size_32/model_epoch_200.pt'))
+        vae.load_state_dict(torch.load('./results/img_size_32/model_epoch_200.pt'))
         vae.eval()
         for name, param in vae.named_parameters():
             print(f"名前: {name}")
