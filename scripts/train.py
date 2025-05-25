@@ -6,8 +6,7 @@ import torch
 
 from src.factories.dataset_factory import get_dataloader
 from src.factories.model_factory import get_model
-from src.trainer.vae_trainer import VAETrainer
-from src.utils.evaluation_utils import visualize_images_grid
+from src.runner.vae_runner import VAERunner
 
 def load_config(path):
     with open(path, "r") as f:
@@ -31,39 +30,30 @@ def main():
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[15], gamma=0.1)
     
     save_dir = f"./results/{config['model']['name']}/img_size_{config['dataset']['args']['image_size']}"
+    pretrained_path = config['trainer']['args']['pretrained_path']
     
-    if not os.path.exists(os.path.abspath(save_dir)):
-        train = True
-    else:
-        train = False
-
-    vae_trainer = VAETrainer(model=vae, 
+    vae_runner = VAERunner(model=vae, 
                 train_dataloader=train_dataloader,
                 val_dataloader = val_dataloader, 
                 optimizer=optimizer, 
                 scheduler=scheduler, 
                 epochs=config['trainer']['args']['epochs'], 
                 save_dir=save_dir,
+                pretrained_path=pretrained_path,
                 device=device
                 )
-
-    if train:
-        history = vae_trainer.train_model()
+    
+    if pretrained_path is None:
+        history = vae_runner.train_model()
         pkl_name = 'history.pkl'
         pkl_path = os.path.join(save_dir, pkl_name)
         with open(pkl_path, 'wb') as f:
             pickle.dump(history, f)
     else:
-        vae.load_state_dict(torch.load('./results/img_size_32/model_epoch_200.pt'))
-        vae.eval()
-        for name, param in vae.named_parameters():
-            print(f"名前: {name}")
-            print(f"重みの形状: {param.shape}")
-            print(f"値:\n{param.data}\n")
-            input()
-        z = torch.randn(64, 4, 64, 64).to(device)
-        x_hat = vae.decoder(z)
-        visualize_images_grid(x_hat, save_path='plot.jpg')
+        vae_runner.visualize_reconstructed_image()
+        # z = torch.randn(64, 4, 64, 64).to(device)
+        # x_hat = vae.decoder(z)
+        # visualize_images_grid(x_hat, save_path='plot.jpg')
         
 
 if __name__ == "__main__":

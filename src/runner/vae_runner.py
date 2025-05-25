@@ -1,8 +1,10 @@
 import os
 
 import torch
-class VAETrainer:
-    def __init__(self, model, train_dataloader, val_dataloader, optimizer, scheduler, epochs, save_dir, device):
+
+from src.utils.evaluation_utils import visualize_images_grid
+class VAERunner:
+    def __init__(self, model, train_dataloader, val_dataloader, optimizer, scheduler, epochs, save_dir, pretrained_path, device):
         self.model = model
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
@@ -10,17 +12,21 @@ class VAETrainer:
         self.scheduler = scheduler
         self.epochs = epochs
         self.save_dir = save_dir
+        self.pretrained_path = pretrained_path
         self.device = device
         self.history = {'train_loss': [], 'val_loss': []}
         
         os.makedirs(self.save_dir, exist_ok=True)
-    
+
+        if self.pretrained_path is not None:
+            self.model.load_state_dict(torch.load(self.pretrained_path))
+        
     def train_one_epoch(self):
         self.model.train()
         total_loss = 0.0
         for data, label in self.train_dataloader:
             data = data.to(self.device)
-            loss, z = self.model(data)
+            loss, z, x_hat = self.model(data)
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
@@ -36,12 +42,12 @@ class VAETrainer:
         with torch.no_grad():
             for data, _ in self.val_dataloader:
                 data = data.to(self.device)
-                loss, z = self.model(data)
+                loss, z, x_hat = self.model(data)
                 total_loss += loss.item()
         total_loss /= len(self.val_dataloader)
         self.history['val_loss'].append(total_loss)    
         return total_loss    
-
+    
     def train_model(self):
         for epoch in range(self.epochs):
             print(f"\nEpoch [{epoch+1}/{self.epochs}]")
@@ -57,3 +63,17 @@ class VAETrainer:
                 torch.save(self.model.state_dict(), save_path)
                 print(f"Saved model to {save_path}")
         return self.history
+
+    def visualize_reconstructed_image(self):
+        self.model.eval()
+        for data, label in self.val_dataloader:
+            data = data.to(self.device)
+            loss, z, x_hat = self.model(data)
+            break
+        visualize_images_grid(x_hat, 'plot.jpg')
+    
+    def check_vae_parameter(self):
+        for name, param in self.model.named_parameters():
+            print(f"名前: {name}")
+            print(f"重みの形状: {param.shape}")
+            print(f"値:\n{param.data}\n")
