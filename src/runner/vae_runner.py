@@ -1,4 +1,5 @@
 import os
+import pickle
 
 import torch
 
@@ -12,11 +13,17 @@ class VAERunner:
         self.scheduler = scheduler
         self.epochs = epochs
         self.save_dir = save_dir
+        self.img_dir = os.path.join(self.save_dir, 'imgs')
+        self.checkpoint_dir = os.path.join(self.save_dir, 'checkpoints')
+        self.log_dir = os.path.join(self.save_dir, 'history')
         self.pretrained_path = pretrained_path
         self.device = device
         self.history = {'train_loss': [], 'val_loss': []}
         
         os.makedirs(self.save_dir, exist_ok=True)
+        os.makedirs(self.img_dir, exist_ok=True)
+        os.makedirs(self.checkpoint_dir, exist_ok=True)
+        os.makedirs(self.log_dir, exist_ok=True)
 
         if self.pretrained_path is not None:
             self.model.load_state_dict(torch.load(self.pretrained_path))
@@ -62,18 +69,25 @@ class VAERunner:
                 save_path = os.path.join(self.save_dir, f'model_epoch_{epoch+1}.pt')
                 torch.save(self.model.state_dict(), save_path)
                 print(f"Saved model to {save_path}")
+        pkl_name = 'history.pkl'
+        pkl_path = os.path.join(self.save_dir, pkl_name)
+        with open(pkl_path, 'wb') as f:
+            pickle.dump(self.history, f)
         return self.history
 
-    def visualize_reconstructed_image(self):
+    def visualize_reconstructed_image(self, file_name):
+        file_path = os.path.join(self.img_dir, file_name)
         self.model.eval()
         for data, label in self.val_dataloader:
             data = data.to(self.device)
             loss, z, x_hat = self.model(data)
             break
-        visualize_images_grid(x_hat, 'plot.jpg')
+        visualize_images_grid(x_hat, file_path)
     
-    def check_vae_parameter(self):
-        for name, param in self.model.named_parameters():
-            print(f"名前: {name}")
-            print(f"重みの形状: {param.shape}")
-            print(f"値:\n{param.data}\n")
+    def check_vae_parameter(self, output_file):
+        output_file_path = os.path.join(self.log_dir, output_file)
+        with open(output_file_path, 'w', encoding='utf-8') as f:            
+            for name, param in self.model.named_parameters():
+                f.write(f"Name: {name}\n")
+                f.write(f"Shape of the weight: {param.shape}\n")
+                f.write(f"Values:\n{param.data}\n\n")

@@ -2,7 +2,7 @@ dataset:
   name: cifar10
   args:
     batch_size: 64
-    image_size: 32
+    image_size: 64
 
 model:
   name: Diffusers
@@ -20,6 +20,5 @@ trainer:
   args:
     epochs: 200
     lr: 0.001
-    save_dir: './results/img_size_32'
-    pretrained_path: 
+    pretrained_path: ./results/Diffusers/img_size_64/checkpoints/model_epoch_200.pt
     

@@ -1,6 +1,4 @@
 import yaml
-import pickle
-import os
 
 import torch
 
@@ -44,17 +42,9 @@ def main():
                 )
     
     if pretrained_path is None:
-        history = vae_runner.train_model()
-        pkl_name = 'history.pkl'
-        pkl_path = os.path.join(save_dir, pkl_name)
-        with open(pkl_path, 'wb') as f:
-            pickle.dump(history, f)
+        vae_runner.train_model()
     else:
-        vae_runner.visualize_reconstructed_image()
-        # z = torch.randn(64, 4, 64, 64).to(device)
-        # x_hat = vae.decoder(z)
-        # visualize_images_grid(x_hat, save_path='plot.jpg')
-        
-
+        vae_runner.visualize_reconstructed_image(file_name=f'reconstructed_img.jpg')
+        vae_runner.check_vae_parameter(output_file='weights.txt')
 if __name__ == "__main__":
     main()
