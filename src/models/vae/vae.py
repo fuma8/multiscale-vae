@@ -22,3 +22,6 @@ class BaseVAE(nn.Module):
         L1 = F.mse_loss(x_hat, x, reduction="sum")
         L2 = torch.sum(posterior.kl())
         return (L1 + L2) / batch_size, z, x_hat
+
+    def sample(self, noise):
+        return self.decoder(noise)

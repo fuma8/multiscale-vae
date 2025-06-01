@@ -45,6 +45,7 @@ def main():
         vae_runner.train_model()
     else:
         vae_runner.visualize_reconstructed_image(file_name=f'reconstructed_img.jpg')
-        vae_runner.check_vae_parameter(output_file='weights.txt')
+        vae_runner.check_vae_parameter(file_name='weights.txt')
+        vae_runner.visualize_sampled_image(shape=(16,4,config['dataset']['args']['image_size'],config['dataset']['args']['image_size']), file_name=f'sampled_img.jpg')
 if __name__ == "__main__":
     main()

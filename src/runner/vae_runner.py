@@ -65,7 +65,7 @@ class VAERunner:
             
             self.scheduler.step()
             
-            if (epoch+1) % 5 == 0:
+            if (epoch+1) % 100 == 0:
                 save_path = os.path.join(self.save_dir, f'model_epoch_{epoch+1}.pt')
                 torch.save(self.model.state_dict(), save_path)
                 print(f"Saved model to {save_path}")
@@ -84,10 +84,17 @@ class VAERunner:
             break
         visualize_images_grid(x_hat, file_path)
     
-    def check_vae_parameter(self, output_file):
-        output_file_path = os.path.join(self.log_dir, output_file)
-        with open(output_file_path, 'w', encoding='utf-8') as f:            
+    def check_vae_parameter(self, file_name):
+        file_path = os.path.join(self.log_dir, file_name)
+        with open(file_path, 'w', encoding='utf-8') as f:            
             for name, param in self.model.named_parameters():
                 f.write(f"Name: {name}\n")
                 f.write(f"Shape of the weight: {param.shape}\n")
                 f.write(f"Values:\n{param.data}\n\n")
+    
+    def visualize_sampled_image(self, shape, file_name):
+        file_path = os.path.join(self.img_dir, file_name)
+        self.model.eval()
+        noise = torch.randn(shape).to(self.device)
+        x_hat = self.model.sample(noise)
+        visualize_images_grid(x_hat, file_path)
