@@ -3,7 +3,7 @@ import pickle
 
 import torch
 
-from src.utils.evaluation_utils import visualize_images_grid
+from src.utils.evaluation_utils import visualize_images_grid, visualize_tensor_images
 class VAERunner:
     def __init__(self, model, train_dataloader, val_dataloader, optimizer, scheduler, epochs, save_dir, pretrained_path, device):
         self.model = model
@@ -98,3 +98,13 @@ class VAERunner:
         noise = torch.randn(shape).to(self.device)
         x_hat = self.model.sample(noise)
         visualize_images_grid(x_hat, file_path)
+    
+    def visualize_latent_image(self, file_name):
+        file_path = os.path.join(self.img_dir, file_name)
+        self.model.eval()
+        for data, _ in self.val_dataloader:
+            data = data.to(self.device)
+            z = self.model(data, visualize_latent=True)
+            break
+        visualize_tensor_images(z, file_path)
+                

@@ -11,8 +11,10 @@ class BaseVAE(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
     
-    def forward(self, x):
+    def forward(self, x, visualize_latent=False):
         z = self.encoder(x)
+        if visualize_latent:
+            return z
         from src.factories.model_factory import get_model
         posterior = get_model(category='distribution', name='DiagonalGaussianDistribution', parameters=z)
         z = posterior.sample()
