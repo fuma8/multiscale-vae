@@ -18,20 +18,12 @@ def visualize_images_grid(images, save_path, num_images=16, grid_size=(4, 4)):
     print(f"Saved results: {os.path.abspath(save_path)}")
 
 def visualize_tensor_images(tensor, save_path, set_idx=0):
-    """
-    (32, 8, 64, 64) のテンソルから指定セットの8枚画像を表示する。
-    
-    Parameters:
-    - tensor: torch.Tensor of shape (32, 8, 64, 64)
-    - set_idx: int, 表示したいセット番号（0〜31）
-    """
-    assert tensor.shape == (32, 8, 64, 64), "テンソルの形状が正しくありません"
     assert 0 <= set_idx < 32, "set_idx は 0〜31 の範囲で指定してください"
     
     images = tensor[set_idx]  # 形状: (8, 64, 64)
     
-    fig, axs = plt.subplots(1, 8, figsize=(16, 2))
-    for i in range(8):
+    fig, axs = plt.subplots(1, tensor.shape[1], figsize=(16, 2))
+    for i in range(tensor.shape[1]):
         axs[i].imshow(images[i].detach().cpu().numpy(), cmap='gray')
     
     plt.tight_layout()

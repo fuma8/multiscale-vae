@@ -48,5 +48,6 @@ def main():
         vae_runner.check_vae_parameter(file_name='weights.txt')
         vae_runner.visualize_sampled_image(shape=(16,4,config['dataset']['args']['image_size'],config['dataset']['args']['image_size']), file_name=f'sampled_img.jpg')
         vae_runner.visualize_latent_image(file_name=f'latent_img.jpg')
+        vae_runner.visualize_noise(file_name=f'noise.jpg')
 if __name__ == "__main__":
     main()

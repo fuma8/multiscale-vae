@@ -83,6 +83,7 @@ class VAERunner:
             loss, z, x_hat = self.model(data)
             break
         visualize_images_grid(x_hat, file_path)
+        visualize_images_grid(data, os.path.join(self.img_dir, 'original_img.jpg'))
     
     def check_vae_parameter(self, file_name):
         file_path = os.path.join(self.log_dir, file_name)
@@ -107,4 +108,12 @@ class VAERunner:
             z = self.model(data, visualize_latent=True)
             break
         visualize_tensor_images(z, file_path)
-                
+    
+    def visualize_noise(self, file_name):
+        file_path = os.path.join(self.img_dir, file_name)
+        self.model.eval()
+        for data, _ in self.val_dataloader:
+            data = data.to(self.device)
+            z = self.model(data, visualize_noise=True)
+            break
+        visualize_tensor_images(z, file_path)
